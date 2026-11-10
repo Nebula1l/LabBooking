@@ -1,0 +1,133 @@
+@page
+@model LabBooking.Pages.Bookings.IndexModel
+
+@{
+    ViewData["Title"] = "Бронювання";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div> 
+            
+            <h1>Список бронювань</h1>
+  <p class="text-muted"> Активні та скасовані бронювання обладнання: </p>
+        </div>
+        <a asp-page="/Bookings/Create" class="btn btn-primary"> Нове бронювання </a>
+    </div>
+
+    <form method="get" class="row g-3 mb-4">
+        <div class="col-md-5">
+            <label class="form-label">Пристрій</label>
+            <select name="equipmentId" class="form-select">
+                <option value="">Усі пристрої</option>
+
+                @foreach (var equipment in Model.EquipmentList)
+                {
+                    if (Model.EquipmentId == equipment.Id)
+                    {
+                        <option value="@equipment.Id" selected>
+                            @equipment.Name
+                        </option>
+                    }
+                    else
+                    {
+
+                        <option value="@equipment.Id">
+                            @equipment.Name
+                        </option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Дата початку</label>
+            <input type="date"
+                   name="filterDate"
+                   value="@Model.FilterDate?.ToString("yyyy-MM-dd")"
+                   class="form-control" />
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+            <button type="submit" class="btn btn-success me-2">
+                Фільтрувати
+            </button>
+            <a asp-page="/Bookings/Index"
+               class="btn btn-outline-secondary"> Скинути
+            </a>
+        </div>
+    </form>
+    
+    @if (Model.BookingList.Count == 0)
+    {
+        <div class="alert alert-info">
+            Бронювань за такими умовами немає.
+        </div>
+    }
+    else
+    {
+        <table class="table table-bordered table-hover">
+         <thead>
+         <tr>
+                    <th>Пристрій</th>
+                    <th>Студент</th>
+                    <th>Група</th>
+                    <th>Початок</th>
+                    <th>Завершення</th>
+                    <th>Статус</th>
+                    <td>
+
+                    </td>
+                        
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var booking in Model.BookingList)
+                {
+                    <tr> 
+                        <td>
+                            <a asp-page="/Equipment/Details"
+                               asp-route-id="@booking.EquipmentId">
+                                @booking.Equipment?.Name
+                            </a>
+                        </td>
+                        <td>@booking.StudentName</td>
+                        <td>@booking.StudentGroup</td>
+                        <td>@booking.StartTime.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td>@booking.EndTime.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td>
+                            @if (booking.IsCancelled)
+                            {
+                                <span class="badge bg-secondary"> Скасовано 
+
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">
+                                    Активне
+                                </span>
+                            }
+                        </td>
+                        <td>
+
+
+                            
+                            @if (!booking.IsCancelled)
+                            {
+                                <form method="post"
+                                      asp-page-handler="Cancel"
+                                      asp-route-id="@booking.Id">
+                                    <button type="submit"
+                                            class="btn btn-danger btn-sm">
+                                        Скасувати
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+
+</div>

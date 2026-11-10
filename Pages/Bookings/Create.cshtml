@@ -1,0 +1,99 @@
+@page
+@model LabBooking.Pages.Bookings.CreateModel
+
+@{
+    ViewData["Title"] = "Нове бронювання";
+}
+
+<div class="container mt-4">
+    <h1>Нове бронювання</h1>
+    <form method="post" class="mt-4">
+        <div asp-validation-summary="ModelOnly"
+            class="text-danger">
+      </div>
+        <div class="mb-3">
+            <label asp-for="BookingItem.EquipmentId"
+                  class="form-label">
+                Пристрій
+            </label>
+
+            <select asp-for="BookingItem.EquipmentId"
+                    class="form-select">
+                <option value="0">Оберіть пристрій</option>
+                @foreach (var equipment in Model.EquipmentList)
+                {
+                    <option value="@equipment.Id">
+                        @equipment.Name (@equipment.Inventorynumber)
+                    </option>
+                }
+            </select>
+            <span asp-validation-for="BookingItem.EquipmentId"
+                  class="text-danger">
+            </span>
+        </div>
+
+
+        <div class="mb-3">
+            <label asp-for="BookingItem.StudentName"
+                   class="form-label">
+                Ім'я
+            </label>
+            <input asp-for="BookingItem.StudentName"
+                   class="form-control"
+                   placeholder="Іван Петренко" />
+
+            <span asp-validation-for="BookingItem.StudentName"
+                  class="text-danger">
+            </span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="BookingItem.StudentGroup"
+                   class="form-label">
+                Група
+            </label>
+            <input asp-for="BookingItem.StudentGroup"
+                   class="form-control"
+                   placeholder="КН-22" />
+
+            <span asp-validation-for="BookingItem.StudentGroup" 
+                  class="text-danger">
+            </span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="BookingItem.StartTime" 
+                   class="form-label">
+                Час початку
+            </label>
+            <input asp-for="BookingItem.StartTime" 
+                   type="datetime-local"
+                   class="form-control" />
+            <span asp-validation-for="BookingItem.StartTime" 
+                  class="text-danger">
+            </span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="BookingItem.EndTime" 
+                   class="form-label">
+                Час завершення
+            </label>
+            <input asp-for="BookingItem.EndTime"  
+                   type="datetime-local" 
+                   class="form-control" /> 
+
+            <span asp-validation-for="BookingItem.EndTime" 
+                  class="text-danger">
+            </span>
+        </div>
+
+        <button type="submit" class="btn btn-primary"> 
+            Забронювати 
+        </button>  
+        <a asp-page="/Bookings/Index" 
+           class="btn btn-outline-secondary"> 
+            Список бронювань
+        </a>
+    </form>
+</div>

@@ -1,0 +1,127 @@
+﻿@page
+@model IndexModel
+
+@{
+    ViewData["Title"] = "Каталог обладнання";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1>Каталог обладнання</h1>
+            <p class="text-muted">
+                Обладнання лабораторії університету
+            </p>
+        </div>
+
+        <a asp-page="/Equipment/Create" class="btn btn-primary">
+            Додати обладнання
+        </a>
+    </div>
+
+
+    <form method="get" class="row g-3 mb-4">
+        <div class="col-md-5">
+            <label class="form-label">Пошук за назвою</label> 
+
+            <input type="text"  
+                   name="searchText"
+                   value="@Model.SearchText" 
+                   class="form-control"
+                   placeholder="введіть" />
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Категорія</label> 
+
+            <select name="categoryId" class="form-select"> 
+                <option value="">Усі категорії</option>
+
+                @foreach (var category in Model.Categories) 
+                 {
+                    if (Model.CategoryId == category.Id) 
+                    {
+                        <option value="@category.Id" selected> 
+                            @category.Name
+                        </option>
+                    }
+                    else
+                     {
+                        <option value="@category.Id">
+                            @category.Name
+                        </option>
+                 }
+                }
+            </select>
+        </div>
+        <div class="col-md-3 d-flex align-items-end"> 
+            <button type="submit" class="btn btn-success me-2">
+                Знайти
+            </button>
+
+            <a asp-page="/Index" class="btn btn-outline-secondary"> 
+                Скинути
+            </a>
+        </div>
+    </form>
+
+    @if (Model.EquipmentList.Count == 0) 
+    {
+        <div class="alert alert-warning"> 
+            Обладнання не знайдено! 
+        </div>
+     }
+    else
+{
+        <div class="row">
+            @foreach (var item in Model.EquipmentList)
+             {
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 shadow-sm"> 
+                        <div class="card-body">
+
+                            <h5 class="card-title"> 
+                                @item.Name
+                            </h5>
+
+                            <p class="text-muted">
+                                Інвентарний номер:
+                                @item.Inventorynumber
+                            </p>
+                            <p>
+                                Категорія:
+                                @item.Category?.Name 
+                            </p>
+                            <p>
+                                @item.Description 
+                            </p>
+
+                            @if (item.IsOperational) 
+                            {
+                                <span class="badge bg-success">
+                                    Справний
+                                </span>
+                             }
+                            else
+                            {
+                                <span class="badge bg-danger">
+                                    Несправний
+                                </span>
+                             }
+
+                            <div class="mt-3">
+                                <a asp-page="/Equipment/Details"  
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-outline-primary btn-sm">
+                                    Детальніше
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+        }
+        </div>
+     }
+
+</div>

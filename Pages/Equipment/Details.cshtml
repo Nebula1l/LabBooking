@@ -1,0 +1,112 @@
+@page
+@model LabBooking.Pages.Equipment.DetailsModel
+
+@{
+    ViewData["Title"] = "Картка пристрою";
+}
+
+<div class="container mt-4">
+
+    @if (Model.EquipmentItem != null)
+    {
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1>@Model.EquipmentItem.Name</h1>
+
+            <a asp-page="/Index" class="btn btn-outline-secondary">
+                До каталогу
+            </a>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+
+                <h5 class="card-title">Інформація про пристрій</h5>
+
+                <p>
+                    <strong>Інвентарний номер:</strong>
+                    @Model.EquipmentItem.Inventorynumber
+                </p>
+
+                <p>
+                    <strong>Категорія:</strong>
+                    @Model.EquipmentItem.Category?.Name
+                </p>
+
+                <p>
+                    <strong>Опис:</strong>
+                    @Model.EquipmentItem.Description
+                </p>
+
+                <p>
+                    <strong>Стан:</strong>
+
+                    @if (Model.EquipmentItem.IsOperational)
+                    {
+                        <span class="badge bg-success">Справний</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Несправний</span>
+                    }
+                </p>
+
+                <a asp-page="/Equipment/Edit"
+                   asp-route-id="@Model.EquipmentItem.Id"
+                   class="btn btn-warning">
+                    Редагувати
+                </a>
+
+                @if (Model.EquipmentItem.IsOperational)
+                {
+                    <a asp-page="/Bookings/Create"
+                       asp-route-equipmentId="@Model.EquipmentItem.Id"
+                       class="btn btn-primary">
+                        Забронювати
+                    </a>
+                }
+                else
+                {
+                    <span class="text-danger ms-2">
+                        Несправний пристрій не можливо забронювати.
+                    </span>
+                }
+
+            </div>
+        </div>
+
+        <h3>Найближчі активні бронювання</h3>
+
+        @if (Model.ActiveBookings.Count == 0)
+        {
+            <div class="alert alert-info">
+                Найближчих активних бронювань не має!
+            </div>
+        }
+        else
+        {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Студент</th>
+                        <th>Група</th>
+                        <th>Початок</th>
+                        <th>Завершення</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var booking in Model.ActiveBookings)
+                    {
+                        <tr>
+                            <td>@booking.StudentName</td>
+                            <td>@booking.StudentGroup</td>
+                            <td>@booking.StartTime.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>@booking.EndTime.ToString("dd.MM.yyyy HH:mm")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    }
+
+</div>
